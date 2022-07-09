@@ -1,6 +1,6 @@
 import React from 'react';
 import Counter from '../component/Counter';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { decrease, increase, setDiff } from '../modules/counter';
 
 // container components란 리덕스에 있는 상태를 조회하거나
@@ -8,10 +8,20 @@ import { decrease, increase, setDiff } from '../modules/counter';
 function CounterContainer() {
   // useSelector는 state를 조회하는 훅
   // selector function의 state 파라미터가 redux의 현재 상태임
-  const { number, diff } = useSelector((state) => ({
-    number: state.counter.number,
-    diff: state.counter.diff,
-  }));
+  const { number, diff } = useSelector(
+    (state) => ({
+      number: state.counter.number,
+      diff: state.counter.diff,
+    }),
+    shallowEqual
+    // 객체를 만들면 최적화 함수를 넣어줘야 함, 다른 스테이트 변경 때도 re-render가 일어남
+    // (left, right) => left.number === right.number && left.diff === right.diff
+  );
+  // 다음처럼 하면 re-render 안 일어남
+  // 값으로 받아올 때는 알아서 최적화를 함
+  // const number = useSelector((state) => state.counter.number);
+  // const diff = useSelector((state) => state.counter.diff);
+
   const dispatch = useDispatch();
 
   const onIncrease = () => dispatch(increase());
@@ -32,4 +42,4 @@ function CounterContainer() {
   );
 }
 
-export default CounterContainer;
+export default React.memo(CounterContainer);
