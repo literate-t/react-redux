@@ -14,7 +14,8 @@ function CounterContainer() {
       diff: state.counter.diff,
     }),
     shallowEqual
-    // 객체를 만들면 최적화 함수를 넣어줘야 함, 다른 스테이트 변경 때도 re-render가 일어남
+    // 객체를 만들면 최적화 함수를 넣어줘야 함
+    // 새로운 객체를 만드므로 상태 비교를 할 수 없어 무조건 리렌더링이 됨
     // (left, right) => left.number === right.number && left.diff === right.diff
   );
   // 다음처럼 하면 re-render 안 일어남
